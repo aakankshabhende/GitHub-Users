@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react' 
+import Loading from './Components/Loading';
+import Users from './Components/Users';
 
 function App() {
+  const [user, setUser] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const showUsers = async () => {
+      try{
+        const res = await fetch("https://api.github.com/users");
+        setLoading(false);
+        setUser(await res.json());
+      }
+      catch{
+        setLoading(true);
+      }
+  }
+
+  useEffect(() => {
+    showUsers();
+  },[]);
+
+  if(loading){
+    return <Loading/>
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+        <Users user = {user}/>
+    </>
   );
 }
 
